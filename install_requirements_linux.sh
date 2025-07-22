@@ -13,7 +13,7 @@ if [ ! -f "$PYTHON_EXEC" ]; then
 fi
 
 echo "1. Uninstalling conflicting packages..."
-$PYTHON_EXEC -m pip uninstall -y onnxruntime opencv-python opencv-contrib-python opencv-python-headless opencv-contrib-python-headless
+$PYTHON_EXEC -m pip uninstall -y onnxruntime opencv-python opencv-python-headless opencv-contrib-python-headless
 
 echo "2. Installing requirements individually..."
 # Reading and installing requirements one by one for better error handling
