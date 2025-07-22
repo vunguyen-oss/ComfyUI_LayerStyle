@@ -60,26 +60,14 @@ Some JSON workflow files in the    ```workflow``` directory, That's examples of 
 
 ### Install dependency packages
 
-* for ComfyUI official portable package, double-click the ```install_requirements.bat``` in the plugin directory, for Aki ComfyUI package double-click on the ```install_requirements_aki.bat``` in the plugin directory, and wait for the installation to complete.
+* **For Windows (using ComfyUI Portable):** Double-click `install_requirements.bat` in the plugin directory. This script handles the installation of all necessary dependencies.
 
-* Or install dependency packages, open the cmd window in the ComfyUI_LayerStyle plugin directory like 
-  ```ComfyUI\custom_nodes\ComfyUI_LayerStyle``` and enter the following command,
-
-&emsp;&emsp;for ComfyUI official portable package, type:
-
-```
-..\..\..\python_embeded\python.exe -s -m pip install -r requirements.txt
-.\repair_dependency.bat
-```
-
-&emsp;&emsp;for Aki ComfyUI package, type:
-
-```
-..\..\python\python.exe -s -m pip install -r requirements.txt
-.\repair_dependency_aki.bat
-```
-
-* Restart ComfyUI.
+* **For Linux / Colab:** Run the `install_requirements_linux.sh` script from the terminal inside the plugin directory:
+  ```bash
+  sh ./install_requirements_linux.sh
+  ```
+  
+* Restart ComfyUI after the installation is complete.
 
 ### Download Model Files
 
@@ -103,7 +91,7 @@ This error is caused by incorrect version of the ```opencv-contrib-python``` pac
 ### NameError: name 'guidedFilter' is not defined
 
 The reason for the problem is the same as above.
-#### For the issues with the above, please double click ```repair_dependency.bat``` (for Official ComfyUI Protable) or  ```repair_dependency_aki.bat``` (for ComfyUI-aki-v1.x) in the plugin folder to automatically fix them.
+#### For the issues with the above, please re-run the installation script (`install_requirements.bat` for Windows or `install_requirements_linux.sh` for Linux/Colab). This will attempt to fix dependency conflicts.
 
 ### Cannot import name 'VitMatteImageProcessor' from 'transformers'
 
@@ -145,7 +133,7 @@ When this error has occurred, please check the network environment.
 
 ## Update
 
-<font size="4">**If the dependency package error after updating,  please double clicking ```repair_dependency.bat``` (for Official ComfyUI Protable) or  ```repair_dependency_aki.bat``` (for ComfyUI-aki-v1.x) in the plugin folder to reinstall the dependency packages. </font><br />    
+<font size="4">**If you encounter dependency package errors after updating, please re-run the appropriate installation script (`install_requirements.bat` for Windows or `install_requirements_linux.sh` for Linux/Colab) to reinstall the dependencies.**</font><br />    
 
 * Commit [SegformerUltraV3](SegformerUltraV3), [LoadSegformerModel](LoadSegformerModel), [SegformerClothesSetting](SegformerClothesSetting) and [SegformerFashionSetting](SegformerFashionSetting) nodes, Separate the loading of models and settings to save resources when using multiple nodes.
 * Add multiple languages and increase support for 5 languages: Chinese, French, Japanese, Korean and Russian. This feature producted by [ComfyUI-Globalization-Node-Translation](https://github.com/yamanacn/ComfyUI-Globalization-Node-Translation), thank you to the original author.
