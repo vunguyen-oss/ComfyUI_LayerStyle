@@ -2,16 +2,13 @@
 
 echo "Installing ComfyUI_LayerStyle dependencies for Colab..."
 
-# Define paths
-COMFYUI_DIR="/content/ComfyUI"
-LAYER_STYLE_DIR="$COMFYUI_DIR/custom_nodes/ComfyUI_LayerStyle"
+# Set the path to the Python executable in the virtual environment using a relative path
+PYTHON_EXEC="../../venv/bin/python"
 
-# Use the Python from ComfyUI's environment if available
-if [ -d "$COMFYUI_DIR" ] && [ -f "$COMFYUI_DIR/main.py" ]; then
-  PYTHON_EXEC="python"  # Use system Python in Colab context
-else
-  echo "Error: ComfyUI installation not found at $COMFYUI_DIR"
-  echo "Please install ComfyUI first."
+# Check if the Python executable exists
+if [ ! -f "$PYTHON_EXEC" ]; then
+  echo "Error: Python executable not found at $PYTHON_EXEC (relative to current script)"
+  echo "Please ensure the ComfyUI virtual environment is set up correctly."
   exit 1
 fi
 
@@ -25,7 +22,7 @@ while read requirement; do
         echo "Installing: $requirement"
         $PYTHON_EXEC -m pip install "$requirement"
     fi
-done < "$LAYER_STYLE_DIR/requirements.txt"
+done < "requirements.txt"
 
 echo
 echo "Installation complete!" 
