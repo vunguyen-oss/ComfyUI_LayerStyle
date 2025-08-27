@@ -1,13 +1,12 @@
 @echo off
 
-set "python_exec=..\..\..\python_embeded\python.exe"
+set "python_exec=..\..\python\python.exe"
 set "repair_dependency_txt=%~dp0\repair_dependency_list.txt"
 set "requirements_txt=%~dp0\requirements.txt"
 
 echo Installing with ComfyUI Portable
 echo .
 echo Install requirement.txt...
-
 for /f "delims=" %%i in (%requirements_txt%) do (
     %python_exec% -s -m pip install "%%i"
     )

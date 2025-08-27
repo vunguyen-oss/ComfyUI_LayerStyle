@@ -60,14 +60,26 @@ Some JSON workflow files in the    ```workflow``` directory, That's examples of 
 
 ### Install dependency packages
 
-* **For Windows (using ComfyUI Portable):** Double-click `install_requirements.bat` in the plugin directory. This script handles the installation of all necessary dependencies.
+* for ComfyUI official portable package, double-click the ```install_requirements.bat``` in the plugin directory, for Aki ComfyUI package double-click on the ```install_requirements_aki.bat``` in the plugin directory, and wait for the installation to complete.
 
-* **For Linux / Colab:** Run the `install_requirements_linux.sh` script from the terminal inside the plugin directory:
-  ```bash
-  sh ./install_requirements_linux.sh
-  ```
-  
-* Restart ComfyUI after the installation is complete.
+* Or install dependency packages, open the cmd window in the ComfyUI_LayerStyle plugin directory like 
+  ```ComfyUI\custom_nodes\ComfyUI_LayerStyle``` and enter the following command,
+
+&emsp;&emsp;for ComfyUI official portable package, type:
+
+```
+..\..\..\python_embeded\python.exe -s -m pip install -r requirements.txt
+.\repair_dependency.bat
+```
+
+&emsp;&emsp;for Aki ComfyUI package, type:
+
+```
+..\..\python\python.exe -s -m pip install -r requirements.txt
+.\repair_dependency_aki.bat
+```
+
+* Restart ComfyUI.
 
 ### Download Model Files
 
@@ -91,7 +103,7 @@ This error is caused by incorrect version of the ```opencv-contrib-python``` pac
 ### NameError: name 'guidedFilter' is not defined
 
 The reason for the problem is the same as above.
-#### For the issues with the above, please re-run the installation script (`install_requirements.bat` for Windows or `install_requirements_linux.sh` for Linux/Colab). This will attempt to fix dependency conflicts.
+#### For the issues with the above, please double click ```repair_dependency.bat``` (for Official ComfyUI Protable) or  ```repair_dependency_aki.bat``` (for ComfyUI-aki-v1.x) in the plugin folder to automatically fix them.
 
 ### Cannot import name 'VitMatteImageProcessor' from 'transformers'
 
@@ -133,8 +145,13 @@ When this error has occurred, please check the network environment.
 
 ## Update
 
-<font size="4">**If you encounter dependency package errors after updating, please re-run the appropriate installation script (`install_requirements.bat` for Windows or `install_requirements_linux.sh` for Linux/Colab) to reinstall the dependencies.**</font><br />    
+<font size="4">**If the dependency package error after updating,  please double clicking ```repair_dependency.bat``` (for Official ComfyUI Protable) or  ```repair_dependency_aki.bat``` (for ComfyUI-aki-v1.x) in the plugin folder to reinstall the dependency packages. </font><br />    
 
+* Commit [FluxKontextImageScale](#FluxKontextImageScale) node, based on official node modifications, used to resizes the image to one that is more optimal for flux kontext. For images with different aspect ratio, the scale will be adjusted appropriately to maintain all information.
+* Commit [MaskBoxExtend](#MaskBoxExtend) node, used to generate BBOX mask extension range and output as Mask.
+* Commit [ColorNegative](#ColorNegative) node, used to invert the color of image.
+* Commit [LoadImagesFromPath](#LoadImagesFromPath) and [ImageTaggerSaveV2](#ImageTaggerSaveV2) nodes, used to load a list of images from a folder and save images and tagger text file with corresponding file names.
+* Commit [LoadImageFromPath](LoadImageFromPath) node, The images in a folder can be loaded and output as image list, also supporting output of a list corresponding to a file name.
 * Commit [SegformerUltraV3](SegformerUltraV3), [LoadSegformerModel](LoadSegformerModel), [SegformerClothesSetting](SegformerClothesSetting) and [SegformerFashionSetting](SegformerFashionSetting) nodes, Separate the loading of models and settings to save resources when using multiple nodes.
 * Add multiple languages and increase support for 5 languages: Chinese, French, Japanese, Korean and Russian. This feature producted by [ComfyUI-Globalization-Node-Translation](https://github.com/yamanacn/ComfyUI-Globalization-Node-Translation), thank you to the original author.
 * Commit [HalfTone](#HalfTone) node, use for halftone processing of images.
@@ -730,6 +747,14 @@ Node options:
 * S: S channel.
 * V: V channel.
 
+### <a id="table1">ColorNegative</a>
+Change color to negative of image, you can choose RGB, Mono, or each channel of RGB to negative.
+![image](image/color_negative_example.jpg)    
+
+Node Options:  
+![image](image/color_negative_node.jpg)    
+* negative_channel: Select the channel for inversion.
+
 # <a id="table1">LayerUtility</a>
 
 ![image](image/layerutility_nodes.jpg)    
@@ -957,6 +982,20 @@ Node Options:
 * image: The input image.
 * icmask_data: Splicing information output from ICMask node.
 
+### <a id="table1">FluxKontextImageScale</a>
+Based on official node modifications, used to resizes the image to one that is more optimal for flux kontext. For images with different aspect ratio, the scale will be adjusted appropriately to maintain all information.
+The following example uses this node to maintain the complete information of a 4K resolution image, changes the background of the image through the FluxKontext model inference, and then achieves 4K image quality detail restoration through the [HLFrequencyDetailRestore](#HLFrequencyDetailRestore) node.
+<font size="1">*this workflow (flux_kontext_image_scale_example.json) is in the workflow directory.  </font><br /> 
+![image](image/flux_kontext_image_scale_node_example.jpg)
+
+Node Options:   
+![image](image/flux_kontext_image_scale_node.jpg)    
+
+* image: The input image.
+* method: Scaling sampling methods, including lanczos, bicubic, hamming, bilinear, box, and nearest.
+
+Outputs:
+* image: The output image.
 
 ### <a id="table1">VQAPrompt</a>
 
@@ -1732,6 +1771,28 @@ Node Options:
 
 <sup>*</sup> Enter```%date``` for the current date (YY-mm-dd) and ```%time``` for the current time (HH-MM-SS). You can enter ```/``` for subdirectories. For example, ```%date/name_%tiem``` will output the image to the ```YY-mm-dd``` folder, with ```name_HH-MM-SS``` as the file name prefix.
 
+### <a id="table1">ImageTaggerSaveV2</a>
+The upgraded version of [ImageTaggerSave](#ImageTaggerSave) node can be used in conjunction with [LoadImagesFromPath](#LoadImagesFromPath) node to save the text label files of corresponding images in the folder, while maintaining the original file name.
+
+The following options have been added to the original node:
+![image](image/image_tagger_save_v2_node.jpg)      
+* custom_filename: User defined file name. If there is input here, use it as the save file name; otherwise, use filename_prefix as the file name prefix.
+* remove_custom_filename_ext: Whether to remove the extension from the original file name.
+
+### <a id="table1">LoadImagesFromPath</a>  
+Load images from the specified folder.
+
+Node Options:
+![image](image/load_images_from_path_node.jpg)      
+* path: Folder path.
+* image_load_cap: The number of output files. The default value of 0 means to read all image files in the folder.
+* select_every_nth: Loads one image every ```select_every_nth``` images, skipping others.
+
+Outputs:
+* images: Output image list.
+* masks: Output the mask list corresponding to the image.
+* file_name: Output a list of file names corresponding to the images.
+* frame_count: Output the total number of images.
 
 # <a id="table1">LayerMask</a>
 
@@ -1769,6 +1830,28 @@ Node options:
 Output:
 
 * box_preview: Preview image of detection results. Red represents the detected result, and green represents the adjust output result.
+* x_percent: Horizontal position output in percentage.
+* y_percent: Vertical position output in percentage.
+* width: Width.
+* height: Height.
+* x: The x-coordinate of the top left corner position.
+* y: The y-coordinate of the top left corner position.
+
+### <a id="table1">MaskBoxExtend</a>
+Generate a BBOX mask to expand the range and output it as Mask. The expansion range can be set to positive or negative values, with positive values indicating expansion and negative values indicating contraction.
+![image](image/mask_box_extend_example.jpg)    
+
+Node Options:  
+![image](image/mask_box_extend_node.jpg)    
+* mask: The input mask.
+* crop_box: MaskBoxDetect node outputs mask BBOX data.
+* top_extend: Top extension range. 100 represents a 100% increase in BBOX height.
+* bottom_extend: Bottom extension range. 100 represents a 100% increase in BBOX height.
+* left_extend: Left extension range. 100 represents a 100% increase in BBOX width.
+* right_extend: Right extension range. 100 represents a 100% increase in BBOX width.
+
+Outputs:
+* mask: Mask of BBOX extension.
 * x_percent: Horizontal position output in percentage.
 * y_percent: Vertical position output in percentage.
 * width: Width.
